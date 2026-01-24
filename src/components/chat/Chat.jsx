@@ -1,10 +1,22 @@
-const Chat = () => {
-  return <div>Messages</div>;
-};
+// const Chat = (messages) => {
+//   return (
+//     <div>
+//       {messages.map(({ role, content }) => (
+//         <div>{content}</div>
+//       ))}
+//     </div>
+//   );
+// };
 
-export default Chat;
+// export default Chat;
 
 // This way also works
-// export function Chat() {
-//   return <div>Messages</div>;
-// }
+export function Chat({ messages }) {
+  return (
+    <div>
+      {messages.map(({ role, content }) => (
+        <div>{content}</div>
+      ))}
+    </div>
+  );
+}

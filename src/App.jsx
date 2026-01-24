@@ -28,6 +28,18 @@ const MESSAGES = [
       "Sure! Why did the scarecrow win an award? Because he was outstanding in his field!",
   },
   { role: "user", content: "Haha, that's a good one!" },
+  { role: "assistant", content: "Glad you liked it! Want to hear another?" },
+  { role: "user", content: "Yes, please!" },
+  {
+    role: "assistant",
+    content:
+      "Why don't scientists trust atoms? Because they make up everything!",
+  },
+  {
+    role: "user",
+    content:
+      "This is a really really long message..... I will just keep adding more words because whynot? I need this to see the scrolling feature\nok\ntest\nnope\nexploding kittnes",
+  },
 ];
 
 export default App;

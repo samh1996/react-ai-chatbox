@@ -5,7 +5,7 @@ import { Controls } from "./components/Controls/Controls.jsx";
 
 function App() {
   const [messages, setMessages] = useState([]);
-  
+
   function handleContentSend(content) {
     setMessages((prevMessages) => [...prevMessages, { role: "user", content }]);
   }
@@ -20,7 +20,7 @@ function App() {
         <Chat messages={messages} />
       </div>
       <div>
-        <Controls onSend={handleContentSend}/>
+        <Controls onSend={handleContentSend} />
       </div>
     </div>
   );

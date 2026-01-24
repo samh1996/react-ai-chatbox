@@ -1,22 +1,14 @@
 import styles from "./Chat.module.css";
 
-// const Chat = (messages) => {
-//   return (
-//     <div>
-//       {messages.map(({ role, content }) => (
-//         <div>{content}</div>
-//       ))}
-//     </div>
-//   );
-// };
+const WELCOME_MESSAGE = {
+  role: "assistant",
+  content: "Hello! I'm your AI Chatbot. How can I assist you today?",
+};
 
-// export default Chat;
-
-// This way also works
 export function Chat({ messages }) {
   return (
     <div className={styles.Chat}>
-      {messages.map(({ role, content }, index) => (
+      {[WELCOME_MESSAGE, ...messages].map(({ role, content }, index) => (
         <div key={index} data-role={role} className={styles.Message}>
           {content}
         </div>

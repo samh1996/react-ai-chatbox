@@ -2,15 +2,10 @@ import { useState } from "react";
 import styles from "./App.module.css";
 import { Chat } from "./components/chat/Chat.jsx";
 import { Controls } from "./components/Controls/Controls.jsx";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY });
-const chat = ai.chats.create({
-  model: "gemini-3-flash-preview",
-  history: [],
-});
+import { Assistant } from "./assistants/googleai.js";
 
 function App() {
+  const assistant = new Assistant();
   const [messages, setMessages] = useState([]);
 
   function addMessage(message) {
@@ -20,8 +15,9 @@ function App() {
   async function handleContentSend(content) {
     addMessage({ role: "user", content });
     try {
-      const result = await chat.sendMessage({ message: content });
-      addMessage({ role: "assistant", content: result.text });
+      // const result = await chat.sendMessage({ message: content });
+      const resultText = await assistant.chat(content);
+      addMessage({ role: "assistant", content: resultText });
     } catch (error) {
       addMessage({
         role: "system",

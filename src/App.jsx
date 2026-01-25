@@ -2,7 +2,8 @@ import { useState } from "react";
 import styles from "./App.module.css";
 import { Chat } from "./components/chat/Chat.jsx";
 import { Controls } from "./components/Controls/Controls.jsx";
-import { Assistant } from "./assistants/googleai.js";
+// import { Assistant } from "./assistants/googleai.js";
+import { Assistant } from "./assistants/openai.js";
 
 function App() {
   const assistant = new Assistant();
@@ -16,7 +17,7 @@ function App() {
     addMessage({ role: "user", content });
     try {
       // const result = await chat.sendMessage({ message: content });
-      const resultText = await assistant.chat(content);
+      const resultText = await assistant.chat(content, messages);
       addMessage({ role: "assistant", content: resultText });
     } catch (error) {
       addMessage({

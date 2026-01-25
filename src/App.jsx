@@ -27,6 +27,7 @@ function App() {
         role: "system",
         content: "Sorry, couldnt process your request." + error.message,
       });
+      console.error("Error sending message to AI:", error);
     }
   }
 

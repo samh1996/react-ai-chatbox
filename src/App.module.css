@@ -8,23 +8,7 @@
 }
 
 .Header {
-  /* padding-left: calc(260px + 16px); */
   text-align: center;
-}
-
-.Content {
-  display: flex;
-  flex-grow: 1;
-  gap: 16px;
-  width: 100%;
-  overflow: hidden;
-}
-
-.Main {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: 16px;
 }
 
 .Logo {
@@ -36,25 +20,14 @@
   margin: 0;
 }
 
-.Configuration {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-@media screen and (max-width: 768px) {
-  .Header {
-    padding-left: 0;
-  }
-}
-
 .ChatContainer {
   flex-grow: 1;
   width: 100%;
   background: #ffffff;
   border-radius: 16px;
   overflow-y: auto;
+}
+
+.ControlsSection {
+  width: 100%;
 }

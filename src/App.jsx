@@ -44,7 +44,7 @@ function App() {
       <div className={styles.ChatContainer}>
         <Chat messages={messages} />
       </div>
-      <div>
+      <div className={styles.ControlsSection}>
         <Controls onSend={handleContentSend} />
       </div>
     </div>

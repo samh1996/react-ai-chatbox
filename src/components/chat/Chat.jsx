@@ -1,4 +1,6 @@
 import styles from "./Chat.module.css";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const WELCOME_MESSAGE = {
   role: "assistant",
@@ -10,7 +12,7 @@ export function Chat({ messages }) {
     <div className={styles.Chat}>
       {[WELCOME_MESSAGE, ...messages].map(({ role, content }, index) => (
         <div key={index} data-role={role} className={styles.Message}>
-          {content}
+          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
         </div>
       ))}
     </div>

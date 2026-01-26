@@ -22,7 +22,6 @@ function App() {
       // const result = await chat.sendMessage({ message: content });
       const resultText = await assistant.chat(content, messages);
       addMessage({ role: "assistant", content: resultText });
-      setIsLoading(false);
     } catch (error) {
       addMessage({
         role: "system",
@@ -45,7 +44,7 @@ function App() {
         <Chat messages={messages} />
       </div>
       <div className={styles.ControlsSection}>
-        <Controls onSend={handleContentSend} />
+        <Controls onSend={handleContentSend} isDisabled={isLoading} />
       </div>
     </div>
   );

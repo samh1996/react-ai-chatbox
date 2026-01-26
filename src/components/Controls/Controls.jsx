@@ -1,10 +1,17 @@
 import { BiSend } from "react-icons/bi";
 import styles from "./Controls.module.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 export function Controls({ isDisabled = false, onSend }) {
+  const textAreaRef = useRef(null);
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (!isDisabled) {
+      textAreaRef.current.focus();
+    }
+  }, [isDisabled]);
 
   function handleContentChange(event) {
     setContent(event.target.value);
@@ -36,6 +43,7 @@ export function Controls({ isDisabled = false, onSend }) {
           onChange={handleContentChange}
           onKeyDown={handleEnterPress}
           disabled={isDisabled}
+          ref={textAreaRef}
         />
       </div>
       <button

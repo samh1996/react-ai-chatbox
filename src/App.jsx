@@ -3,11 +3,13 @@ import styles from "./App.module.css";
 import { Chat } from "./components/chat/Chat.jsx";
 import { Controls } from "./components/Controls/Controls.jsx";
 // import { Assistant } from "./assistants/googleai.js";
-import { Assistant } from "./assistants/openai.js";
+import { Assistant as AssistantClass } from "./assistants/openai.js";
 import { Loader } from "./components/Loader/Loader.jsx";
+import { Assistant } from "./components/Assistant/Assistant.jsx";
+
+let assistant;
 
 function App() {
-  const assistant = new Assistant();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -54,6 +56,10 @@ function App() {
     }
   }
 
+  function handleAssistantChange(newAssistant) {
+    assistant = newAssistant;
+  }
+
   return (
     <div className={styles.App}>
       {isLoading && <Loader />}
@@ -70,6 +76,7 @@ function App() {
           isDisabled={isLoading || isStreaming}
         />
       </div>
+      <Assistant onAssistantChange={handleAssistantChange} />
     </div>
   );
 }

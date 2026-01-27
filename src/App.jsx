@@ -10,6 +10,7 @@ function App() {
   const assistant = new Assistant();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   function updateLastMessageContent(content) {
     setMessages((prevMessages) =>
@@ -37,9 +38,11 @@ function App() {
           isFirstChunk = true;
           addMessage({ role: "assistant", content: "" });
           setIsLoading(false);
+          setIsStreaming(true);
         }
         updateLastMessageContent(chunk);
       }
+      setIsStreaming(false);
     } catch (error) {
       addMessage({
         role: "system",
@@ -47,6 +50,7 @@ function App() {
       });
       console.error("Error sending message to AI:", error);
       setIsLoading(false);
+      setIsStreaming(false)
     }
   }
 
@@ -61,7 +65,7 @@ function App() {
         <Chat messages={messages} />
       </div>
       <div className={styles.ControlsSection}>
-        <Controls onSend={handleContentSend} isDisabled={isLoading} />
+        <Controls onSend={handleContentSend} isDisabled={isLoading || isStreaming} />
       </div>
     </div>
   );

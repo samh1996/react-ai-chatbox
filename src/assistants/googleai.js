@@ -24,4 +24,19 @@ export class Assistant {
       throw error;
     }
   }
+
+  async *chatStream(content) {
+    try {
+      const result = await ai.models.generateContentStream({
+        model: "gemini-3-flash-preview",
+        contents: content,
+      });
+
+      for await (const chunk of result) {
+        yield chunk.text;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }

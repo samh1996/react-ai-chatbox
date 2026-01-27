@@ -9,7 +9,7 @@ export function Theme() {
   return (
     <div className={styles.Theme}>
       <span>Theme:</span>
-      <select onChange={handleValueChange} defaultValue="system">
+      <select onChange={handleValueChange} defaultValue="dark">
         <option value="light">Light</option>
         <option value="dark">Dark</option>
         <option value="system">System</option>

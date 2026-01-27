@@ -6,6 +6,7 @@ import { Controls } from "./components/Controls/Controls.jsx";
 import { Assistant as AssistantClass } from "./assistants/openai.js";
 import { Loader } from "./components/Loader/Loader.jsx";
 import { Assistant } from "./components/Assistant/Assistant.jsx";
+import { Theme } from "./components/Theme/Theme.jsx";
 
 let assistant;
 
@@ -76,7 +77,10 @@ function App() {
           isDisabled={isLoading || isStreaming}
         />
       </div>
-      <Assistant onAssistantChange={handleAssistantChange} />
+      <div className={styles.Configuration}>
+        <Assistant onAssistantChange={handleAssistantChange} />
+        <Theme />
+      </div>
     </div>
   );
 }

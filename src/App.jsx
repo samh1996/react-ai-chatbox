@@ -2,8 +2,8 @@ import { useState } from "react";
 import styles from "./App.module.css";
 import { Chat } from "./components/chat/Chat.jsx";
 import { Controls } from "./components/Controls/Controls.jsx";
-import { Assistant } from "./assistants/googleai.js";
-// import { Assistant } from "./assistants/openai.js";
+// import { Assistant } from "./assistants/googleai.js";
+import { Assistant } from "./assistants/openai.js";
 import { Loader } from "./components/Loader/Loader.jsx";
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
     addMessage({ role: "user", content });
     setIsLoading(true);
     try {
-      const resultText = await assistant.chatStream(content);
+      const resultText = await assistant.chatStream(content, messages);
       let isFirstChunk = false;
 
       for await (const chunk of resultText) {
@@ -50,7 +50,7 @@ function App() {
       });
       console.error("Error sending message to AI:", error);
       setIsLoading(false);
-      setIsStreaming(false)
+      setIsStreaming(false);
     }
   }
 
@@ -65,7 +65,10 @@ function App() {
         <Chat messages={messages} />
       </div>
       <div className={styles.ControlsSection}>
-        <Controls onSend={handleContentSend} isDisabled={isLoading || isStreaming} />
+        <Controls
+          onSend={handleContentSend}
+          isDisabled={isLoading || isStreaming}
+        />
       </div>
     </div>
   );

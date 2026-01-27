@@ -24,4 +24,23 @@ export class Assistant {
       throw error;
     }
   }
+
+  async *chatStream(content, history) {
+    try {
+      const stream = await client.responses.create({
+        model: this.#model,
+        input: [...history, { content, role: "user" }],
+        stream: true,
+      });
+
+      for await (const event of stream) {
+        // Responses API streaming emits event objects (not choices/delta).
+        if (event.type === "response.output_text.delta") {
+          yield event.delta ?? "";
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }

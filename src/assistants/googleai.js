@@ -4,10 +4,12 @@ const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY });
 
 export class Assistant {
   #chat;
+  #model;
 
-  constructor() {
+  constructor(model = "gemini-3-flash-preview") {
+    this.#model = model;
     this.#chat = ai.chats.create({
-      model: "gemini-3-flash-preview",
+      model: model,
       history: [],
     });
   }
@@ -28,7 +30,7 @@ export class Assistant {
   async *chatStream(content) {
     try {
       const result = await ai.models.generateContentStream({
-        model: "gemini-3-flash-preview",
+        model: this.#model,
         contents: content,
       });
 

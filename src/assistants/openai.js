@@ -6,6 +6,7 @@ const client = new OpenAI({
 });
 
 export class Assistant {
+  #client;
   #model;
 
   constructor(model = "gpt-5-nano") {

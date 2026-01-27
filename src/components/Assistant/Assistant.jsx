@@ -10,28 +10,37 @@ const assistantMap = {
 };
 
 export function Assistant({ onAssistantChange }) {
-  const [value, setValue] = useState("openai");
+  const [value, setValue] = useState("openai:gpt-5-mini");
 
   function handleValueChange(event) {
     setValue(event.target.value);
   }
 
   useEffect(() => {
-    const AssistantClass = assistantMap[value];
+    const [assistant, model] = value.split(":");
+    const AssistantClass = assistantMap[assistant];
 
     if (!AssistantClass) {
       throw new Error(`Unsupported assistant type: ${value}`);
     }
 
-    onAssistantChange(new AssistantClass());
+    onAssistantChange(new AssistantClass(model));
   }, [value]);
 
   return (
     <div className={styles.Assistant}>
       <span>Assistant:</span>
       <select defaultValue={value} onChange={handleValueChange}>
-        <option value="openai">OpenAI</option>
-        <option value="googleai">Google AI</option>
+        <optgroup label="OpenAI">
+          <option value="openai:gpt-5-mini">GPT-5 Mini</option>
+          <option value="openai:gpt-5-nano">GPT-5 Nano</option>
+        </optgroup>
+        <optgroup label="Google AI">
+          <option value="googleai:gemini-3-flash-preview">
+            gemini-3-flash-preview
+          </option>
+          <option value="googleai:gemini-2.5-flash">gemini-2.5-flash</option>
+        </optgroup>
       </select>
     </div>
   );

@@ -7,6 +7,7 @@ import { Assistant as AssistantClass } from "./assistants/openai.js";
 import { Loader } from "./components/Loader/Loader.jsx";
 import { Assistant } from "./components/Assistant/Assistant.jsx";
 import { Theme } from "./components/Theme/Theme.jsx";
+import { Sidebar } from "./components/Sidebar/Sidebar.jsx";
 
 let assistant;
 
@@ -68,18 +69,23 @@ function App() {
         <img className={styles.Logo} src="/chat-bot.png" />
         <h2 className={styles.Title}>AI Chatbox</h2>
       </header>
-      <div className={styles.ChatContainer}>
-        <Chat messages={messages} />
-      </div>
-      <div className={styles.ControlsSection}>
-        <Controls
-          onSend={handleContentSend}
-          isDisabled={isLoading || isStreaming}
-        />
-      </div>
-      <div className={styles.Configuration}>
-        <Assistant onAssistantChange={handleAssistantChange} />
-        <Theme />
+      <div className={styles.Content}>
+        <Sidebar />
+        <main className={styles.Main}>
+          <div className={styles.ChatContainer}>
+            <Chat messages={messages} />
+          </div>
+          <div className={styles.ControlsSection}>
+            <Controls
+              onSend={handleContentSend}
+              isDisabled={isLoading || isStreaming}
+            />
+          </div>
+          <div className={styles.Configuration}>
+            <Assistant onAssistantChange={handleAssistantChange} />
+            <Theme />
+          </div>
+        </main>
       </div>
     </div>
   );

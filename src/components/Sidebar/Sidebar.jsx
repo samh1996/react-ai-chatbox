@@ -1,4 +1,6 @@
 import styles from "./Sidebar.module.css";
+import { FaHamburger } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
 
 const CHATS = [
   {
@@ -24,21 +26,47 @@ const CHATS = [
 ];
 
 export function Sidebar({ chats = CHATS, activeChatId = 1 }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  function handleSidebarToggle() {
+    setIsOpen((prevIsOpen) => !prevIsOpen);
+  }
+
+  function handleOnKeyDown(event) {
+    if (isOpen && event.key === "Escape") {
+      setIsOpen(false);
+    }
+  }
+
   return (
-    <div className={styles.Sidebar}>
-      <ul className={styles.Chats}>
-        {chats.map((chat) => (
-          <li
-            key={chat.id}
-            data-active={chat.id === activeChatId}
-            className={styles.Chat}
-          >
-            <button className={styles.ChatButton}>
-              <div className={styles.ChatTitle}>{chat.title}</div>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <button
+        className={styles.MenuButton}
+        onClick={handleSidebarToggle}
+        onKeyDown={handleOnKeyDown}
+      >
+        <FaHamburger size={24} />
+      </button>
+
+      <div className={styles.Sidebar} data-open={isOpen}>
+        <ul className={styles.Chats}>
+          {chats.map((chat) => (
+            <li
+              key={chat.id}
+              data-active={chat.id === activeChatId}
+              className={styles.Chat}
+            >
+              <button className={styles.ChatButton}>
+                <div className={styles.ChatTitle}>{chat.title}</div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {isOpen && (
+        <div className={styles.Overlay} onClick={handleSidebarToggle}></div>
+      )}
+    </>
   );
 }

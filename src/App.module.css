@@ -54,3 +54,9 @@
   justify-content: center;
   gap: 16px;
 }
+
+@media screen and (max-width: 768px) {
+  .Header {
+    padding-left: 0;
+  }
+}

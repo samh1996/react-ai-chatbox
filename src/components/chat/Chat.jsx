@@ -1,50 +1,68 @@
-import { useEffect, useRef, useMemo } from "react";
+import { Messages } from "../Messages/Messages.jsx";
+import { Controls } from "../Controls/Controls.jsx";
+import { Loader } from "../Loader/Loader.jsx";
+import { useState } from "react";
 import styles from "./Chat.module.css";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
-const WELCOME_MESSAGE_GROUP = [
-  {
-    role: "assistant",
-    content: "Hello! I'm your AI Chatbot. How can I assist you today?",
-  },
-];
+export function Chat({ assistant }) {
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
-export function Chat({ messages }) {
-  const messagesEndRef = useRef(null);
-  const messageGroups = useMemo(
-    () =>
-      messages.reduce((groups, message) => {
-        if (message.role === "user") groups.push([]);
-        groups[groups.length - 1].push(message);
-        return groups;
-      }, []),
-    [messages],
-  );
+  function updateLastMessageContent(content) {
+    setMessages((prevMessages) =>
+      prevMessages.map((message, index) =>
+        index === prevMessages.length - 1
+          ? { ...message, content: `${message.content}${content}` }
+          : message,
+      ),
+    );
+  }
 
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
+  function addMessage(message) {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  }
 
-    if (lastMessage?.role === "user") {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  async function handleContentSend(content) {
+    addMessage({ role: "user", content });
+    setIsLoading(true);
+    try {
+      const resultText = await assistant.chatStream(content, messages);
+      let isFirstChunk = false;
+
+      for await (const chunk of resultText) {
+        if (!isFirstChunk) {
+          isFirstChunk = true;
+          addMessage({ role: "assistant", content: "" });
+          setIsLoading(false);
+          setIsStreaming(true);
+        }
+        updateLastMessageContent(chunk);
+      }
+      setIsStreaming(false);
+    } catch (error) {
+      addMessage({
+        role: "system",
+        content: "Sorry, couldnt process your request." + error.message,
+      });
+      console.error("Error sending message to AI:", error);
+      setIsLoading(false);
+      setIsStreaming(false);
     }
-  }, [messages]);
+  }
 
   return (
-    <div className={styles.Chat}>
-      {[WELCOME_MESSAGE_GROUP, ...messageGroups].map((messages, groupIndex) => (
-        // Group
-        <div key={groupIndex} className={styles.Group}>
-          {messages.map(({ role, content }, index) => (
-            // Message
-            <div key={index} className={styles.Message} data-role={role}>
-              <Markdown>{content}</Markdown>
-            </div>
-          ))}
-        </div>
-      ))}
-
-      <div ref={messagesEndRef} />
-    </div>
+    <>
+      {isLoading && <Loader />}
+      <div className={styles.Chat}>
+        <Messages messages={messages} />
+      </div>
+      <div className={styles.ControlsSection}>
+        <Controls
+          onSend={handleContentSend}
+          isDisabled={isLoading || isStreaming}
+        />
+      </div>
+    </>
   );
 }

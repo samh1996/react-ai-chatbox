@@ -4,9 +4,24 @@ const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY });
 
 export class Assistant {
   #model;
+  #chat;
+  name = "googleai";
 
   constructor(model = "gemini-3-flash-preview") {
     this.#model = model;
+  }
+
+  createChat(messages = []) {
+    // Convert messages to Google AI format for chat history
+    const history = messages.map((msg) => ({
+      role: msg.role === "assistant" ? "model" : "user",
+      parts: [{ text: msg.content }],
+    }));
+
+    this.#chat = ai.chats.create({
+      model: this.#model,
+      history: history,
+    });
   }
 
   async chat(content, messages = []) {

@@ -1,20 +1,29 @@
-import { Messages } from "../Messages/Messages.jsx";
-import { Controls } from "../Controls/Controls.jsx";
-import { Loader } from "../Loader/Loader.jsx";
 import { useEffect, useState } from "react";
+import { Loader } from "../Loader/Loader";
+import { Messages } from "../Messages/Messages";
+import { Controls } from "../Controls/Controls";
 import styles from "./Chat.module.css";
 
-export function Chat({ assistant, chatId, chatMessages, onChatMessagesUpdate }) {
+export function Chat({
+  assistant,
+  isActive = false,
+  chatId,
+  chatMessages,
+  onChatMessagesUpdate,
+}) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
     setMessages(chatMessages);
+    if (assistant?.name === "googleai") {
+      assistant.createChat(chatMessages);
+    }
   }, [chatId]);
 
   useEffect(() => {
-    onChatMessagesUpdate(messages)
+    onChatMessagesUpdate(chatId, messages);
   }, [messages]);
 
   function updateLastMessageContent(content) {
@@ -32,16 +41,20 @@ export function Chat({ assistant, chatId, chatMessages, onChatMessagesUpdate }) 
   }
 
   async function handleContentSend(content) {
-    addMessage({ role: "user", content });
+    addMessage({ content, role: "user" });
     setIsLoading(true);
+
     try {
-      const resultText = await assistant.chatStream(content, messages);
+      const result = await assistant.chatStream(
+        content,
+        messages.filter(({ role }) => role !== "system"),
+      );
       let isFirstChunk = false;
 
-      for await (const chunk of resultText) {
+      for await (const chunk of result) {
         if (!isFirstChunk) {
           isFirstChunk = true;
-          addMessage({ role: "assistant", content: "" });
+          addMessage({ content: "", role: "assistant" });
           setIsLoading(false);
           setIsStreaming(true);
         }
@@ -50,14 +63,17 @@ export function Chat({ assistant, chatId, chatMessages, onChatMessagesUpdate }) 
       setIsStreaming(false);
     } catch (error) {
       addMessage({
+        content:
+          error?.message ??
+          "Sorry, I couldn't process your request. Please try again!",
         role: "system",
-        content: "Sorry, couldnt process your request." + error.message,
       });
-      console.error("Error sending message to AI:", error);
       setIsLoading(false);
       setIsStreaming(false);
     }
   }
+
+  if (!isActive) return null;
 
   return (
     <>
@@ -65,12 +81,10 @@ export function Chat({ assistant, chatId, chatMessages, onChatMessagesUpdate }) 
       <div className={styles.Chat}>
         <Messages messages={messages} />
       </div>
-      <div className={styles.ControlsSection}>
-        <Controls
-          onSend={handleContentSend}
-          isDisabled={isLoading || isStreaming}
-        />
-      </div>
+      <Controls
+        isDisabled={isLoading || isStreaming}
+        onSend={handleContentSend}
+      />
     </>
   );
 }

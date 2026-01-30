@@ -29,3 +29,13 @@
   /* 8px - gap between groups */
   min-height: calc(100% - 8px);
 }
+
+.Markdown pre {
+  white-space: pre-wrap;
+}
+
+.Markdown pre:has(code) {
+  background-color: light-dark(#f9f9f9, #171717);
+  padding: 8px;
+  border-radius: 8px;
+}

@@ -47,16 +47,12 @@ function App() {
     setAssistant(newAssistant);
   }
 
-  function updateChats(messages = []) {
-    setChats((prevChats) =>
+  function handleChatMessagesUpdate(messages) {
+      setChats((prevChats) =>
       prevChats.map((chat) =>
         chat.id === activeChatId ? { ...chat, messages } : chat,
       ),
     );
-  }
-
-  function handleChatMessagesUpdate(messages) {
-      updateChats(messages);
   }
 
   function handleNewChatCreate() {

@@ -1,11 +1,10 @@
-import styles from "./App.module.css";
-// import { Assistant as AssistantClass } from "./assistants/openai.js";
-import { Assistant } from "./components/Assistant/Assistant.jsx";
-import { Theme } from "./components/Theme/Theme.jsx";
-import { Sidebar } from "./components/Sidebar/Sidebar.jsx";
-import { Chat } from "./components/chat/Chat.jsx";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Sidebar } from "./components/Sidebar/Sidebar";
+import { Chat } from "./components/Chat/Chat";
+import { Assistant } from "./components/Assistant/Assistant";
+import { Theme } from "./components/Theme/Theme";
+import styles from "./App.module.css";
 
 const CHATS = [
   {
@@ -36,10 +35,9 @@ function App() {
   const [assistant, setAssistant] = useState();
   const [chats, setChats] = useState(CHATS);
   const [activeChatId, setActiveChatId] = useState(2);
-  // note that this
+
   const activeChatMessages = useMemo(
     () => chats.find(({ id }) => id === activeChatId)?.messages ?? [],
-    [chats, activeChatId],
     [chats, activeChatId],
   );
 
@@ -47,12 +45,12 @@ function App() {
     setAssistant(newAssistant);
   }
 
-  function handleChatMessagesUpdate(messages) {
-    const title = messages[0]?.content.split(" ").splice(0, 7).join(" ");
+  function handleChatMessagesUpdate(id, messages) {
+    const title = messages[0]?.content.split(" ").slice(0, 7).join(" ");
 
     setChats((prevChats) =>
       prevChats.map((chat) =>
-        chat.id === activeChatId
+        chat.id === id
           ? { ...chat, title: chat.title ?? title, messages }
           : chat,
       ),
@@ -63,13 +61,7 @@ function App() {
     const id = uuidv4();
 
     setActiveChatId(id);
-    setChats((prevChats) => [
-      ...prevChats,
-      {
-        id,
-        messages: [],
-      },
-    ]);
+    setChats((prevChats) => [...prevChats, { id, messages: [] }]);
   }
 
   function handleActiveChatIdChange(id) {
@@ -83,7 +75,7 @@ function App() {
     <div className={styles.App}>
       <header className={styles.Header}>
         <img className={styles.Logo} src="/chat-bot.png" />
-        <h2 className={styles.Title}>AI Chatbox</h2>
+        <h2 className={styles.Title}>AI Chatbot</h2>
       </header>
       <div className={styles.Content}>
         <Sidebar
@@ -93,14 +85,17 @@ function App() {
           onActiveChatIdChange={handleActiveChatIdChange}
           onNewChatCreate={handleNewChatCreate}
         />
-
         <main className={styles.Main}>
-          <Chat
-            assistant={assistant}
-            chatMessages={activeChatMessages}
-            chatId={activeChatId}
-            onChatMessagesUpdate={handleChatMessagesUpdate}
-          />
+          {chats.map((chat) => (
+            <Chat
+              key={chat.id}
+              assistant={assistant}
+              isActive={chat.id === activeChatId}
+              chatId={chat.id}
+              chatMessages={chat.messages}
+              onChatMessagesUpdate={handleChatMessagesUpdate}
+            />
+          ))}
           <div className={styles.Configuration}>
             <Assistant onAssistantChange={handleAssistantChange} />
             <Theme />

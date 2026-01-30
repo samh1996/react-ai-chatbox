@@ -2,7 +2,7 @@ import styles from "./Sidebar.module.css";
 import { FaHamburger } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 
-export function Sidebar({ chats, activeChatId, onActiveChatIdChange }) {
+export function Sidebar({ chats, activeChatId, onActiveChatIdChange, onNewChatCreate }) {
   const [isOpen, setIsOpen] = useState(true);
 
   function handleSidebarToggle() {
@@ -34,6 +34,9 @@ export function Sidebar({ chats, activeChatId, onActiveChatIdChange }) {
       </button>
 
       <div className={styles.Sidebar} data-open={isOpen}>
+        <button onClick={onNewChatCreate} className={styles.NewChatButton}>New Chat</button>
+
+
         <ul className={styles.Chats}>
           {chats.map((chat) => (
             <li

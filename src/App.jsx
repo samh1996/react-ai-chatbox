@@ -5,6 +5,7 @@ import { Theme } from "./components/Theme/Theme.jsx";
 import { Sidebar } from "./components/Sidebar/Sidebar.jsx";
 import { Chat } from "./components/chat/Chat.jsx";
 import { useState, useMemo } from "react";
+import {v4 as uuidv4} from "uuid";
 
 const CHATS = [
   {
@@ -58,6 +59,20 @@ function App() {
       updateChats(messages);
   }
 
+  function handleNewChatCreate() {
+    const id = uuidv4();
+
+    setActiveChatId(id);
+    setChats((prevChats) => [
+      ...prevChats,
+      {
+        id,
+        title: "New Chat",
+        messages: [],
+      },
+    ]);
+  }
+
   return (
     <div className={styles.App}>
       <header className={styles.Header}>
@@ -69,6 +84,7 @@ function App() {
           chats={chats}
           activeChatId={activeChatId}
           onActiveChatIdChange={setActiveChatId}
+          onNewChatCreate={handleNewChatCreate}
         />
 
         <main className={styles.Main}>

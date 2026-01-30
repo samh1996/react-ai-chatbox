@@ -13,3 +13,4 @@ npm i openai --save
 npm i react-markdown --save
 npm install remark-gfm
 npm install react-textarea-autosize
+npm install uuid

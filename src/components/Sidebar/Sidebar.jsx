@@ -2,7 +2,13 @@ import styles from "./Sidebar.module.css";
 import { FaHamburger } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 
-export function Sidebar({ chats, activeChatId, onActiveChatIdChange, onNewChatCreate }) {
+export function Sidebar({
+  chats,
+  activeChatId,
+  activeChatMessages,
+  onActiveChatIdChange,
+  onNewChatCreate,
+}) {
   const [isOpen, setIsOpen] = useState(true);
 
   function handleSidebarToggle() {
@@ -34,22 +40,29 @@ export function Sidebar({ chats, activeChatId, onActiveChatIdChange, onNewChatCr
       </button>
 
       <div className={styles.Sidebar} data-open={isOpen}>
-        <button onClick={onNewChatCreate} className={styles.NewChatButton}>New Chat</button>
-
+        <button
+          onClick={onNewChatCreate}
+          disabled={activeChatMessages.length === 0}
+          className={styles.NewChatButton}
+        >
+          New Chat
+        </button>
 
         <ul className={styles.Chats}>
-          {chats.map((chat) => (
-            <li
-              key={chat.id}
-              data-active={chat.id === activeChatId}
-              className={styles.Chat}
-              onClick={() => handleChatClick(chat.id)}
-            >
-              <button className={styles.ChatButton}>
-                <div className={styles.ChatTitle}>{chat.title}</div>
-              </button>
-            </li>
-          ))}
+          {chats
+            .filter(({ messages }) => messages.length > 0)
+            .map((chat) => (
+              <li
+                key={chat.id}
+                data-active={chat.id === activeChatId}
+                className={styles.Chat}
+                onClick={() => handleChatClick(chat.id)}
+              >
+                <button className={styles.ChatButton}>
+                  <div className={styles.ChatTitle}>{chat.title}</div>
+                </button>
+              </li>
+            ))}
         </ul>
       </div>
 

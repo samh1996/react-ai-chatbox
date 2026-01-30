@@ -5,7 +5,7 @@ import { Theme } from "./components/Theme/Theme.jsx";
 import { Sidebar } from "./components/Sidebar/Sidebar.jsx";
 import { Chat } from "./components/chat/Chat.jsx";
 import { useState, useMemo } from "react";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 const CHATS = [
   {
@@ -48,7 +48,7 @@ function App() {
   }
 
   function handleChatMessagesUpdate(messages) {
-      setChats((prevChats) =>
+    setChats((prevChats) =>
       prevChats.map((chat) =>
         chat.id === activeChatId ? { ...chat, messages } : chat,
       ),
@@ -69,6 +69,13 @@ function App() {
     ]);
   }
 
+  function handleActiveChatIdChange(id) {
+    setActiveChatId(id);
+    setChats((prevChats) =>
+      prevChats.filter(({ messages }) => messages.length > 0)
+    );
+  }
+
   return (
     <div className={styles.App}>
       <header className={styles.Header}>
@@ -79,7 +86,8 @@ function App() {
         <Sidebar
           chats={chats}
           activeChatId={activeChatId}
-          onActiveChatIdChange={setActiveChatId}
+          activeChatMessages={activeChatMessages}
+          onActiveChatIdChange={handleActiveChatIdChange}
           onNewChatCreate={handleNewChatCreate}
         />
 

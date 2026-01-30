@@ -10,7 +10,7 @@ const assistantMap = {
 };
 
 export function Assistant({ onAssistantChange }) {
-  const [value, setValue] = useState("openai:gpt-5-mini");
+  const [value, setValue] = useState("googleai:gemini-2.5-flash");
 
   function handleValueChange(event) {
     setValue(event.target.value);

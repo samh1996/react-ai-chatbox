@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const { GoogleGenAI } = await import("@google/genai");
 
     console.log("Initializing GoogleGenAI...");
-    const genAI = new GoogleGenAI(process.env.GOOGLE_AI_API_KEY);
+    const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
 
     console.log("Getting generative model...");
     console.log("Available methods:", Object.getOwnPropertyNames(genAI));

@@ -16,8 +16,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log("1");
     const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
+    console.log("2");
     const aiModel = genAI.getGenerativeModel({ model });
+    console.log("3");
 
     // Convert messages to Google AI format
     const history = messages.map((msg) => ({

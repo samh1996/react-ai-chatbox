@@ -21,21 +21,21 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
 
     console.log("Getting generative model...");
-    console.log("Available methods:", Object.getOwnPropertyNames(genAI));
+    // console.log("Available methods:", Object.getOwnPropertyNames(genAI));
 
     // Try different method names that might exist
-    let aiModel;
-    if (typeof genAI.getGenerativeModel === "function") {
-      aiModel = genAI.getGenerativeModel({ model });
-    } else if (typeof genAI.getModel === "function") {
-      aiModel = genAI.getModel({ model });
-    } else if (typeof genAI.model === "function") {
-      aiModel = genAI.model(model);
-    } else {
-      throw new Error(
-        `No suitable model method found. Available methods: ${Object.getOwnPropertyNames(genAI)}`,
-      );
-    }
+    // let aiModel;
+    // if (typeof genAI.getGenerativeModel === "function") {
+    //   aiModel = genAI.getGenerativeModel({ model });
+    // } else if (typeof genAI.getModel === "function") {
+    //   aiModel = genAI.getModel({ model });
+    // } else if (typeof genAI.model === "function") {
+    //   aiModel = genAI.model(model);
+    // } else {
+    //   throw new Error(
+    //     `No suitable model method found. Available methods: ${Object.getOwnPropertyNames(genAI)}`,
+    //   );
+    // }
 
     console.log("Model created successfully");
 
@@ -54,14 +54,16 @@ export default async function handler(req, res) {
     console.log("Starting content generation...");
 
     // Set up streaming response
-    res.writeHead(200, {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    });
+    // res.writeHead(200, {
+    //   "Content-Type": "text/plain; charset=utf-8",
+    //   "Cache-Control": "no-cache",
+    //   Connection: "keep-alive",
+    // });
 
     // Generate streaming response
-    const result = await aiModel.generateContentStream({
+    // const result = await aiModel.generateContentStream({
+    const result = await genAI.models.generateContentStream({
+      model: "gemini-2.5-flash",
       contents: history,
     });
 

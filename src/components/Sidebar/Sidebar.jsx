@@ -1,6 +1,6 @@
 import styles from "./Sidebar.module.css";
 import { FaHamburger } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Sidebar({
   chats,
@@ -9,7 +9,24 @@ export function Sidebar({
   onActiveChatIdChange,
   onNewChatCreate,
 }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection with resize handling
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Check on mount
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   function handleSidebarToggle() {
     setIsOpen((prevIsOpen) => !prevIsOpen);
@@ -29,6 +46,18 @@ export function Sidebar({
     }
   }
 
+  function handleNewChatClick() {
+    onNewChatCreate();
+
+    // Always close sidebar on mobile when creating new chat
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  }
+
+  // On mobile, don't disable the button when messages length is 0
+  const shouldDisableNewChat = !isMobile && activeChatMessages.length === 0;
+
   return (
     <>
       <button
@@ -41,8 +70,8 @@ export function Sidebar({
 
       <div className={styles.Sidebar} data-open={isOpen}>
         <button
-          onClick={onNewChatCreate}
-          disabled={activeChatMessages.length === 0}
+          onClick={handleNewChatClick}
+          disabled={shouldDisableNewChat}
           className={styles.NewChatButton}
         >
           New Chat

@@ -105,7 +105,7 @@ app.post("/api/chat/openai-stream", async (req, res) => {
       .json({ error: "OpenAI not initialized. Check your OPENAI_API_KEY." });
   }
 
-  const { content, messages = [], model = "gpt-4" } = req.body;
+  const { content, messages = [], model = "gpt-4o-mini" } = req.body;
 
   if (!content) {
     return res.status(400).json({ error: "Content is required" });

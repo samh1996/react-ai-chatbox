@@ -32,8 +32,9 @@ export function Assistant({ onAssistantChange }) {
       <span>Assistant:</span>
       <select defaultValue={value} onChange={handleValueChange}>
         <optgroup label="OpenAI">
-          <option value="openai:gpt-5-mini">GPT-5 Mini</option>
-          <option value="openai:gpt-5-nano">GPT-5 Nano</option>
+          <option value="openai:gpt-4o-mini">GPT-4o Mini</option>
+          <option value="openai:gpt-4o">GPT-4o</option>
+          <option value="openai:gpt-4">GPT-4</option>
         </optgroup>
         <optgroup label="Google AI">
           <option value="googleai:gemini-3-flash-preview">

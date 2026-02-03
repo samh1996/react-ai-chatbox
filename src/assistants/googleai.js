@@ -7,35 +7,28 @@ export class Assistant {
   }
 
   createChat(messages = []) {
-    // This method is kept for compatibility but not needed for API calls
     console.log("Chat created with history:", messages.length, "messages");
   }
 
   async chat(content, messages = []) {
     try {
-      console.log("Sending content to API:", content);
-
-      const response = await fetch(
-        "http://localhost:3001/api/chat/google-stream",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content,
-            messages,
-            model: this.#model,
-          }),
+      const response = await fetch("/api/chat/google-stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          content,
+          messages,
+          model: this.#model,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const text = await response.text();
-      console.log("Received response from API:", text);
       return text;
     } catch (error) {
       console.error("Error sending message to API:", error);
@@ -45,20 +38,17 @@ export class Assistant {
 
   async *chatStream(content, messages = []) {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/chat/google-stream",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content,
-            messages,
-            model: this.#model,
-          }),
+      const response = await fetch("/api/chat/google-stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          content,
+          messages,
+          model: this.#model,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

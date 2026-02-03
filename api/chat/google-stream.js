@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     console.log("Streaming started...");
 
     for await (const chunk of result) {
-      const chunkText = chunk.text();
+      const chunkText = chunk.text;
       if (chunkText) {
         res.write(chunkText);
       }

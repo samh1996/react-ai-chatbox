@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Google AI API key not configured" });
   }
 
-  const { content, messages = [], model = "gemini-1.5-flash" } = req.body;
+  const { content, messages = [], model = "gemini-2.5-flash" } = req.body;
 
   if (!content) {
     return res.status(400).json({ error: "Content is required" });

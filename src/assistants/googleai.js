@@ -2,7 +2,7 @@ export class Assistant {
   #model;
   name = "googleai";
 
-  constructor(model = "googleai:gemini-2.5-flash") {
+  constructor(model = "gemini-2.5-flash") {
     this.#model = model;
   }
 

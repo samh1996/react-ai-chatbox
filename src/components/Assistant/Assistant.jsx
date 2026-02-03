@@ -1,6 +1,5 @@
 import styles from "./Assistant.module.css";
 import { useState, useEffect } from "react";
-import OpenAI from "openai";
 import { Assistant as OpenAIAssistant } from "../../assistants/openai.js";
 import { Assistant as GoogleAIAssistant } from "../../assistants/googleai.js";
 

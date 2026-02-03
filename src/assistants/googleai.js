@@ -12,7 +12,7 @@ export class Assistant {
 
   async chat(content, messages = []) {
     try {
-      const response = await fetch("/api/chat/google-robust", {
+      const response = await fetch("/api/chat/google-fixed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export class Assistant {
 
   async *chatStream(content, messages = []) {
     try {
-      const response = await fetch("/api/chat/google-robust", {
+      const response = await fetch("/api/chat/google-fixed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export class Assistant {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // For the robust endpoint, we get the full response at once
+      // For the fixed endpoint, we get the full response at once
       const text = await response.text();
 
       // Simulate streaming by yielding the whole response

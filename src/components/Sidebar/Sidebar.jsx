@@ -74,7 +74,7 @@ export function Sidebar({
           disabled={shouldDisableNewChat}
           className={styles.NewChatButton}
         >
-          New Chat
+          New Chata
         </button>
 
         <ul className={styles.Chats}>

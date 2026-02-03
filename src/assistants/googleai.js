@@ -2,7 +2,7 @@ export class Assistant {
   #model;
   name = "googleai";
 
-  constructor(model = "gemini-1.5-flash") {
+  constructor(model = "googleai:gemini-2.5-flash") {
     this.#model = model;
   }
 
@@ -12,7 +12,7 @@ export class Assistant {
 
   async chat(content, messages = []) {
     try {
-      const response = await fetch("/api/chat/google-fixed", {
+      const response = await fetch("/api/chat/google-stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export class Assistant {
 
   async *chatStream(content, messages = []) {
     try {
-      const response = await fetch("/api/chat/google-fixed", {
+      const response = await fetch("/api/chat/google-stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,12 +54,17 @@ export class Assistant {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // For the fixed endpoint, we get the full response at once
-      const text = await response.text();
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-      // Simulate streaming by yielding the whole response
-      if (text) {
-        yield text;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        if (chunk) {
+          yield chunk;
+        }
       }
     } catch (error) {
       console.error("Error streaming from API:", error);

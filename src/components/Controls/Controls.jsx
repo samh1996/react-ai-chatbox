@@ -6,12 +6,25 @@ import TextareaAutosize from "react-textarea-autosize";
 export function Controls({ isDisabled = false, onSend }) {
   const textAreaRef = useRef(null);
   const [content, setContent] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
-    if (!isDisabled) {
+    // Only auto-focus on desktop, not on mobile
+    if (!isDisabled && !isMobile) {
       textAreaRef.current.focus();
     }
-  }, [isDisabled]);
+  }, [isDisabled, isMobile]);
 
   function handleContentChange(event) {
     setContent(event.target.value);

@@ -1,6 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 
 export default async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -11,15 +21,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Google AI API key not configured" });
   }
 
-  const { content, messages = [], model = "gemini-2.5-flash" } = req.body;
+  const { content, messages = [], model = "gemini-1.5-flash" } = req.body;
 
   if (!content) {
     return res.status(400).json({ error: "Content is required" });
   }
 
   try {
-    // Initialize Google AI with proper configuration
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
+    // Initialize Google AI
+    const genAI = new GoogleGenAI(process.env.GOOGLE_AI_API_KEY);
+    const aiModel = genAI.getGenerativeModel({ model: model });
 
     // Convert messages to Google AI format
     const history = messages.map((msg) => ({
@@ -33,13 +44,15 @@ export default async function handler(req, res) {
       parts: [{ text: content }],
     });
 
-    const result = await ai.models.generateContent({
-      model: model,
+    const result = await aiModel.generateContent({
       contents: history,
     });
 
+    const response = await result.response;
+    const text = response.text();
+
     res.json({
-      text: result.response.text(),
+      text: text,
       success: true,
     });
   } catch (error) {
@@ -47,6 +60,7 @@ export default async function handler(req, res) {
     res.status(500).json({
       error: "Failed to generate response",
       details: error.message,
+      type: error.name,
     });
   }
 }

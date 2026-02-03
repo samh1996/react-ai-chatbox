@@ -10,7 +10,7 @@ const assistantMap = {
 };
 
 export function Assistant({ onAssistantChange }) {
-  const [value, setValue] = useState("googleai:gemini-2.5-flash");
+  const [value, setValue] = useState("googleai:gemini-1.5-flash");
 
   function handleValueChange(event) {
     setValue(event.target.value);
@@ -37,10 +37,8 @@ export function Assistant({ onAssistantChange }) {
           <option value="openai:gpt-4">GPT-4</option>
         </optgroup>
         <optgroup label="Google AI">
-          <option value="googleai:gemini-3-flash-preview">
-            gemini-3-flash-preview
-          </option>
-          <option value="googleai:gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="googleai:gemini-1.5-flash">Gemini 1.5 Flash</option>
+          <option value="googleai:gemini-1.5-pro">Gemini 1.5 Pro</option>
         </optgroup>
       </select>
     </div>

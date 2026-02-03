@@ -12,7 +12,61 @@ A modern, responsive chat application built with React and Vite that supports mu
 - **Dark/Light Theme**: Automatic theme switching based on system preferences
 - **Chat History**: Persistent conversation history with context awareness
 
-## 🚀 Quick Start
+## 🚀 Deployment on Vercel
+
+### Prerequisites for Deployment
+
+- Vercel account
+- GitHub repository (recommended)
+- API keys for Google AI and/or OpenAI
+
+### Deploy Steps
+
+1. **Push your code to GitHub**
+
+   ```bash
+   git add .
+   git commit -m "Prepare for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
+
+3. **Configure Environment Variables**
+   In your Vercel project settings, add these environment variables:
+
+   ```
+   GOOGLE_AI_API_KEY=your-google-ai-api-key-here
+   OPENAI_API_KEY=your-openai-api-key-here
+   ```
+
+4. **Deploy**
+   - Vercel will automatically build and deploy your app
+   - Your app will be available at `https://your-project-name.vercel.app`
+
+### Local Development with API Routes
+
+To test the API routes locally:
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Run development server with API routes
+vercel dev
+```
+
+This will start both your React app and API routes locally.
+
+## 🔒 Security Features
+
+- **API Keys Protected**: All API keys are stored securely on the server
+- **No Client-Side Exposure**: API keys never reach the browser
+- **CORS Configured**: Proper cross-origin resource sharing setup
+- **Error Handling**: Comprehensive error handling for API failures
 
 ### Prerequisites
 
@@ -80,6 +134,62 @@ A modern, responsive chat application built with React and Vite that supports mu
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint for code quality
+
+## 🚀 Deployment on Vercel
+
+### Prerequisites for Deployment
+
+- Vercel account
+- GitHub repository (recommended)
+- API keys for Google AI and/or OpenAI
+
+### Deploy Steps
+
+1. **Push your code to GitHub**
+
+   ```bash
+   git add .
+   git commit -m "Prepare for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
+
+3. **Configure Environment Variables**
+   In your Vercel project settings, add these environment variables:
+
+   ```
+   GOOGLE_AI_API_KEY=your-google-ai-api-key-here
+   OPENAI_API_KEY=your-openai-api-key-here
+   ```
+
+4. **Deploy**
+   - Vercel will automatically build and deploy your app
+   - Your app will be available at `https://your-project-name.vercel.app`
+
+### Local Development with API Routes
+
+To test the API routes locally:
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Run development server with API routes
+vercel dev
+```
+
+This will start both your React app and API routes locally.
+
+## 🔒 Security Features
+
+- **API Keys Protected**: All API keys are stored securely on the server
+- **No Client-Side Exposure**: API keys never reach the browser
+- **CORS Configured**: Proper cross-origin resource sharing setup
+- **Error Handling**: Comprehensive error handling for API failures
 
 ## 🏗️ Project Structure
 

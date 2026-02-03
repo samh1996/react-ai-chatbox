@@ -1,46 +1,74 @@
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: import.meta.env.VITE_OPEN_AI_API_KEY,
-  dangerouslyAllowBrowser: true, // Move the api key to the backend
-});
-
 export class Assistant {
-  #client;
   #model;
+  name = "openai";
 
-  constructor(model = "gpt-5-nano") {
+  constructor(model = "gpt-4") {
     this.#model = model;
   }
 
-  async chat(content, history) {
+  createChat(messages = []) {
+    // This method is kept for compatibility but not needed for API calls
+    console.log("Chat created with history:", messages.length, "messages");
+  }
+
+  async chat(content, messages = []) {
     try {
-      const response = await client.responses.create({
-        model: this.#model,
-        input: [...history, { content, role: "user" }],
+      const response = await fetch("/api/chat/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content,
+          messages,
+          model: this.#model,
+        }),
       });
 
-      return response.output_text;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.text;
     } catch (error) {
+      console.error("Error sending message to API:", error);
       throw error;
     }
   }
 
-  async *chatStream(content, history) {
+  async *chatStream(content, messages = []) {
     try {
-      const stream = await client.responses.create({
-        model: this.#model,
-        input: [...history, { content, role: "user" }],
-        stream: true,
+      const response = await fetch("/api/chat/openai-stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content,
+          messages,
+          model: this.#model,
+        }),
       });
 
-      for await (const event of stream) {
-        // Responses API streaming emits event objects (not choices/delta).
-        if (event.type === "response.output_text.delta") {
-          yield event.delta ?? "";
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        if (chunk) {
+          yield chunk;
         }
       }
     } catch (error) {
+      console.error("Error streaming from API:", error);
       throw error;
     }
   }

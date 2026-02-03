@@ -1,27 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
-
 export default async function handler(req, res) {
-  // Add CORS headers
+  // Handle CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Debug logging
-  console.log("Google AI API Key exists:", !!process.env.GOOGLE_AI_API_KEY);
-  console.log("Request body:", req.body);
-
-  // Check if API key exists
+  // Check environment variable
   if (!process.env.GOOGLE_AI_API_KEY) {
-    console.error("GOOGLE_AI_API_KEY is not set");
+    console.error("GOOGLE_AI_API_KEY not found in environment");
     return res.status(500).json({ error: "Google AI API key not configured" });
   }
 
@@ -32,9 +25,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Initialize Google AI
+    // Dynamic import to avoid module loading issues in serverless
+    const { GoogleGenAI } = await import("@google/genai");
+
+    // Initialize with simple string format (some versions prefer this)
     const genAI = new GoogleGenAI(process.env.GOOGLE_AI_API_KEY);
-    const aiModel = genAI.getGenerativeModel({ model: model });
+    const aiModel = genAI.getGenerativeModel({ model });
 
     // Convert messages to Google AI format
     const history = messages.map((msg) => ({
@@ -48,22 +44,22 @@ export default async function handler(req, res) {
       parts: [{ text: content }],
     });
 
-    console.log("Sending to Google AI:", {
-      model,
-      historyLength: history.length,
-    });
+    console.log("Calling Google AI with model:", model);
 
     // Set up streaming response
     res.writeHead(200, {
-      "Content-Type": "text/plain",
+      "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
     });
 
-    // Generate streaming response
-    const result = await aiModel.generateContentStream({
-      contents: history,
-    });
+    // Generate content with timeout handling
+    const result = await Promise.race([
+      aiModel.generateContentStream({ contents: history }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timeout")), 25000),
+      ),
+    ]);
 
     for await (const chunk of result.stream) {
       const chunkText = chunk.text();
@@ -74,24 +70,21 @@ export default async function handler(req, res) {
 
     res.end();
   } catch (error) {
-    console.error("Google AI Streaming Error:", error);
-    console.error("Error details:", {
+    console.error("Google AI Error:", {
       message: error.message,
       stack: error.stack,
       name: error.name,
     });
 
-    // If response headers haven't been sent, send JSON error
     if (!res.headersSent) {
       return res.status(500).json({
         error: "Failed to generate response",
         details: error.message,
-        type: error.name,
+        timestamp: new Date().toISOString(),
       });
     }
 
-    // Otherwise write error to stream
-    res.write(`Error: ${error.message}`);
+    res.write(`\n\nError: ${error.message}`);
     res.end();
   }
 }
